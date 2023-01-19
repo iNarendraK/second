@@ -1,0 +1,21 @@
+stage ('Build and Package' ) {
+//begin common code 
+if (fileExists()) {
+  def readcounter =    readFile(file: 'version.txt')
+  readcounter = readcounter.toInteger() +1
+  def version= "Version" + readcounter
+  println(version)
+  bat 'mvn package -Dartifactversion=' + "${version}"
+  writeFile(file: 'version.txt', text:readcounter.toString())
+} //if condition
+else {
+currentBuild.result = "FAILURE" 
+  } //else condition
+//end common code
+  echo "Build and Package Completed" 
+} 
+
+mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
+parsedVersion.nextMajorVersion
+parsedVersion.nextMinorVersion
+parsedVersion.nextIncrementalVersion
